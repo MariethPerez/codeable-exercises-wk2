@@ -44,20 +44,41 @@ TABLE = [
   9
 ]
 
-# def turnHuman(notplayed)
-#     value = 0
-#     loop do
-#       puts "\nEs el turno del Humano"
-#       value = gets.chomp.to_i
-#       break if ( ( notplayed.include?(value)) && (value >= 1) && (value <=9) )
-#     end
-#     return value
-# end
 
 def turnBot(value)
   if(value != [])
     value.sample
   end
+end
+
+def valid_ganador(value_human,value_bot,band)
+  for i in 0..COMBINATIONS_WIN.length-1
+
+    if ( (COMBINATIONS_WIN[i] - value_human) == [] )
+         
+      puts "El indescutible ganador!! es el HUMANO "
+      return band = true 
+    
+    elsif ( (COMBINATIONS_WIN[i] - value_bot) == [] )
+      
+      puts "El indescutible ganador!! es el BOT "
+      return band = true 
+    
+    end
+    
+  end
+  if notPlayed(value_human+value_bot,TABLE)==[]
+    puts "Empataron"
+    return band = true 
+  end
+end  
+
+def print_michi(table)
+  puts "\n #{table[0]} | #{table[1]} | #{table[2]} "
+  puts "-----------"
+  puts " #{table[3]} | #{table[4]} | #{table[5]} "
+  puts "-----------"
+  puts " #{table[6]} | #{table[7]} | #{table[8]} "
 end
 
 def tictactoe()
@@ -81,44 +102,27 @@ def tictactoe()
     pos_human = turnHuman(notPlayed(value_human+value_bot,TABLE)).to_i
     table[pos_human-1] = player
     value_human.push(pos_human)
+    puts "Jugada del humano"
+    print_michi(table)
+
+    if valid_ganador(value_human,value_bot,band)==true
+      band=true   
+      exit
+    end
     
-    pos_bot= turnBot(notPlayed(value_human+value_bot,TABLE)).to_i
-    if pos_bot!=0
+    if notPlayed(value_human+value_bot,TABLE)!=[]
+      pos_bot= turnBot(notPlayed(value_human+value_bot,TABLE)).to_i
       table[pos_bot-1] = bot
       value_bot.push(pos_bot)
-    end 
+      puts "Jugada del bot"
+      print_michi(table)
+      band=true if valid_ganador(value_human,value_bot,band)==true
+    end
 
-    # player == "X" ? value_human.push(pos) : value_bot.push(pos)
-
-    puts "\n #{table[0]} | #{table[1]} | #{table[2]} "
-    puts "-----------"
-    puts " #{table[3]} | #{table[4]} | #{table[5]} "
-    puts "-----------"
-    puts " #{table[6]} | #{table[7]} | #{table[8]} "
 
     puts "Soy un humna #{value_human}"
     puts "Soy un bot #{value_bot}"
     puts "NO JUGADAS #{notPlayed(value_human+value_bot,TABLE)}"
-    
-    for i in 0..COMBINATIONS_WIN.length-1
-
-      if ( (COMBINATIONS_WIN[i] - value_human) == [] )
-           
-        puts "El indescutible ganador!! es el HUMANO #{player}"
-        return band = true 
-      
-      elsif ( (COMBINATIONS_WIN[i] - value_bot) == [] )
-        
-        puts "El indescutible ganador!! es el BOT #{player}"
-        return band = true 
-      
-      end
-      
-    end
-    if notPlayed(value_human+value_bot,TABLE)==[]
-      puts "Empataron"
-      return band = true 
-    end
 
   end
 
